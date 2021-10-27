@@ -37,11 +37,17 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Requerimiento 1")
+    print("3- Requerimiento 2")
+    print("0- Salir")
 
 catalog = None
 
+
+def requerimiento1(catalog, ciudad):
+    pass
 """
+ 
 Menu principal
 """
 while True:
@@ -49,6 +55,10 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        catalog= controller.initCatalog()
+
+        controller.loadData(catalog)
+
 
     elif int(inputs[0]) == 2:
         pass
