@@ -39,13 +39,87 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- Requerimiento 1")
     print("3- Requerimiento 2")
+    print("4- Requerimiento 3")
+    print("5- Requerimiento 4")
+    print("6- Requerimiento 5")
+    print("7- Bono")
     print("0- Salir")
 
 catalog = None
+def print5(info):
+    for i in range(1,6):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -4, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
 
 
 def requerimiento1(catalog, ciudad):
-    pass
+    info= controller.requerimiento1(catalog, ciudad)
+    print('El total de avistamientos: ' + str(lt.size(info)))
+    for i in range(1,4):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -2, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    
+
+def requerimiento2(tiempo_min, tiempo_max):
+    info= controller.requerimiento2(catalog, tiempo_min, tiempo_max)
+    print('El total de avistamientos: ' + str(lt.size(info)))
+    for i in range(1,4):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -2, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+
+
+def requerimiento3(hora_min, hora_max):
+    info=controller.requerimiento3(catalog, hora_min, hora_max)
+    print('El total de avistamientos: ' + str(lt.size(info)))
+    for i in range(1,4):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -2, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+
+
 """
  
 Menu principal
@@ -56,12 +130,22 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog= controller.initCatalog()
-
-        controller.loadData(catalog)
-
+        info= controller.loadData(catalog)
+        print5(info)
 
     elif int(inputs[0]) == 2:
-        pass
+        ciudad= input('Ingrese la ciudad a consultar: ')
+        requerimiento1(catalog, ciudad)
+    
+    elif int(inputs[0]) == 3:
+        tiempo_min= input('Ingrese tiempo minimo: ')
+        tiempo_max= input('Ingrese tiempo maximo: ')
+        requerimiento2(tiempo_min, tiempo_max)
+    
+    elif int(inputs[0]) == 4:
+        hora1= input('Ingrese hora minimo: ')
+        hora2= input('Ingrese hora maximo: ')
+        requerimiento3(hora1,hora2)
 
     else:
         sys.exit(0)

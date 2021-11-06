@@ -103,7 +103,7 @@ def requerimiento1(catalog, ciudad):
             i=1
             j=lt.size(lista)
             while i <= j:
-                if elemento['datetime'] > lt.getElement(lista, i)['datetime']:
+                if elemento['datetime'] < lt.getElement(lista, i)['datetime']:
                     viejo= lt.getElement(lista, i)
                     lt.deleteElement(lista, i)
                     lt.insertElement(lista, elemento, i)
@@ -120,7 +120,8 @@ def requerimiento2(catalog, tiempo_min, tiempo_max):
     llaves= om.keys(catalog['duration (seconds)'], tiempo_min, tiempo_max)
     lista= lt.newList()
     iterator1=it.newIterator(llaves)
-    while it.hasnext(iterator1):
+    print(catalog['duration (seconds)'])
+    while it.hasNext(iterator1):
         elemento= it.next(iterator1)
         info= om.get(catalog['duration (seconds)'], elemento)['value']
         iterator2= it.newIterator(info)
@@ -146,6 +147,43 @@ def requerimiento2(catalog, tiempo_min, tiempo_max):
             else: 
                 lt.addLast(lista, elemento2)
     return lista 
+
+def requerimiento3(catalog, hora_min, hora_max):
+    minima= hora_min + ':00'
+    maxima= hora_max + ':00'
+    llaves=om.keys(catalog['horas'], minima, maxima)
+    lista= lt.newList()
+    iterator1= it.newIterator(llaves)
+    while it.hasNext(iterator1):
+        print('entro a')
+        elemento=it.next(iterator1)
+        info= om.get(catalog['horas'], elemento)['value']
+        iterator2=it.newIterator(info)
+        while it.hasNext(iterator2):
+            print('entro b')
+            elemento2= it.next(iterator2)
+            if lt.size(lista) == 0:
+                lt.addFirst(lista, elemento2)
+            else:
+                i= 1
+                j= lt.size(lista)
+                while i <= j:
+                    print('entro')
+                    if elemento2['datetime'] < lt.getElement(lista, i)['datetime']:
+                        viejo= lt.getElement(lista, i)
+                        lt.deleteElement(lista, i)
+                        lt.insertElement(lista, elemento2, i)
+                        lt.insertElement(lista,viejo,i+1)
+                    elif elemento2['datetime'] == lt.getElement(lista, i)['datetime'] :
+                        viejo= lt.getElement(lista, i)
+                        lt.deleteElement(lista, i)
+                        lt.insertElement(lista, elemento2, i)
+                        lt.insertElement(lista,viejo,i+1)
+                    elif i == j:
+                        lt.insertElement(lista, elemento2,i+1)
+                    i+=1
+    return lista
+
 
 
 

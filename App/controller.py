@@ -53,3 +53,14 @@ def loadData(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def requerimiento1(catalog, ciudad):
+
+    return model.requerimiento1(catalog, ciudad)
+
+def requerimiento2(catalog, tiempo_min, tiempo_max):
+
+    return model.requerimiento2(catalog, tiempo_min, tiempo_max)
+
+def requerimiento3(catalog, hora_min, hora_max):
+
+    return model.requerimiento3(catalog, hora_min, hora_max)
