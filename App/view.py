@@ -103,7 +103,6 @@ def requerimiento2(tiempo_min, tiempo_max):
 
 def requerimiento3(hora_min, hora_max):
     info=controller.requerimiento3(catalog, hora_min, hora_max)
-    print(lt.getElement(info, lt.size(info)))
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
         fecha= lt.getElement(info, i)['datetime']
@@ -120,7 +119,7 @@ def requerimiento3(hora_min, hora_max):
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
 
-def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
+def requerimiento4(tiempo_año_1, tiempo_año_2):
     info= controller.requerimiento4(catalog, tiempo_año_1, tiempo_año_2)
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
@@ -131,6 +130,25 @@ def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
     for i in range(lt.size(info) -2, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+
+
+def bono(longitud_max, longitud_min, latitud_min, latitud_max):
+    info= controller.bono(catalog, float(longitud_max), float(longitud_min), float(latitud_min), float(latitud_max))
+    print('El total de avistamientos: ' + str(lt.size(info)))
+    for i in range(1,6):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -4, lt.size(info)+1):
         fecha= lt.getElement(info, i)['datetime']
         ciudad1= lt.getElement(info, i)['city']
         pais= lt.getElement(info, i)['country']
@@ -167,9 +185,17 @@ while True:
         requerimiento3(hora1,hora2)
 
     elif int(inputs[0]) == 5:
-        Año1= input('Ingrese año 1: ')
-        Año2= input('Ingrese año 2: ')
+        Año1= input('Ingrese año 1(AAAA-MM-DD): ')
+        Año2= input('Ingrese año 2(AAAA-MM-DD): ')
         requerimiento4(Año1, Año2)
+
+    elif int(inputs[0]) == 7:
+        longitud1= input('Ingrese longitud-min: ')
+        longitud2= input('Ingrese longitud-max: ')
+        latitud1= input('Ingrese latitud-min: ')
+        latitud2= input('Ingrese latitud-max: ')
+        
+        bono(longitud2, longitud1, latitud1, latitud2)
     else:
         sys.exit(0)
 sys.exit(0)

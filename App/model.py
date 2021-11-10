@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import orderedmapstructure as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from math import *
 import DISClib.DataStructures.linkedlistiterator as it
 assert cf
 
@@ -41,11 +42,12 @@ los mismos.
 
 # Construccion de modelos
 def newcatalog():
-    catalog= {'cities': None, 'years':None, 'duration (seconds)': None, 'Horas': None }
+    catalog= {'cities': None, 'years':None, 'duration (seconds)': None, 'Horas': None,'location':None }
     catalog['years']= om.newMap(omaptype='BST',comparefunction=compareDates)
     catalog['cities']= om.newMap(omaptype='BST',comparefunction=compareDates)
     catalog['duration (seconds)']= om.newMap(omaptype='BST',comparefunction=compareDates)
     catalog['horas']=om.newMap(omaptype='BST',comparefunction=compareDates)
+    catalog['location']=om.newMap(omaptype='BST',comparefunction=compareDates)
     return catalog
 # Funciones para agregar informacion al catalogo
 
@@ -89,6 +91,16 @@ def add_years(infoyears, catalog):
         om.put(catalog['years'],fechafinal,years)
     else:
         lt.addLast(info['value'],infoyears)
+
+def add_location(infolocation, catalog):
+    llave= infolocation['longitude']+ ','+ infolocation['latitude']
+    info= om.get(catalog['location'], llave)
+    if info is None:
+        locacion= lt.newList('SINGLE_LINKED')
+        lt.addLast(locacion, infolocation)
+        om.put(catalog['duration (seconds)'],llave,locacion)
+    else:
+        lt.addLast(info['value'],infolocation)
         
 
 # Funciones de consulta
@@ -152,7 +164,6 @@ def requerimiento3(catalog, hora_min, hora_max):
     minima= hora_min + ':00'
     maxima= hora_max + ':00'
     llaves=om.keys(catalog['horas'], minima, maxima)
-    print(om.get(catalog['horas'], '22:45:00')['value'])
     lista= lt.newList('SINGLE_LINKED')
     iterator1= it.newIterator(llaves)
     while it.hasNext(iterator1):
@@ -184,44 +195,103 @@ def requerimiento3(catalog, hora_min, hora_max):
                     elif i == j:
                         lt.insertElement(lista, elemento2,i+1)
                         break
-                    i+=1
     return lista
 
 def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
-    año1= tiempo_año_1 + '0000-00-00'
-    año2= tiempo_año_2 + '0000-00-00'
+    año1= tiempo_año_1 
+    año2= tiempo_año_2 
     llaves=om.keys(catalog['years'], año1, año2)
     lista= lt.newList('SINGLE_LINKED')
     iterator1= it.newIterator(llaves)
     while it.hasNext(iterator1):
         elemento=it.next(iterator1)
-        info= om.get(catalog['years'], elemento)['values']
+        info= om.get(catalog['years'], elemento)['value']
         iterator2=it.newIterator(info)
         while it.hasNext(iterator2):
             elemento2= it.next(iterator2)
-            print(elemento2)
             if lt.size(lista) == 0:
                 lt.addFirst(lista, elemento2)
             else:
-                i= 1
+                i= 0
                 j= lt.size(lista)
-                while i <= j:
-                    if elemento2['years'] < lt.getElement(lista, i)['years']:
+                while i < j:
+                    i+=1
+                    if elemento2['datetime'] < lt.getElement(lista, i)['datetime']:
                         viejo= lt.getElement(lista, i)
                         lt.deleteElement(lista, i)
                         lt.insertElement(lista, elemento2, i)
                         lt.insertElement(lista,viejo,i+1)
-                    elif elemento2['years'] == lt.getElement(lista, i)['years'] :
+                        break
+                    elif elemento2['datetime'] == lt.getElement(lista, i)['datetime'] :
                         viejo= lt.getElement(lista, i)
                         lt.deleteElement(lista, i)
                         lt.insertElement(lista, elemento2, i)
                         lt.insertElement(lista,viejo,i+1)
+                        break
                     elif i == j:
                         lt.insertElement(lista, elemento2,i+1)
-                    i+=1
+                        break
+                    
     return lista
 
 
+def bono(catalog, longitud_max, longitud_min, latitud_min, latitud_max):
+    radio= haversine(longitud_min,  latitud_min, longitud_max, latitud_max)
+    llaves=om.keySet(catalog['cities'])
+    lista= lt.newList('SINGLE_LINKED')
+    iterator1= it.newIterator(llaves)
+    while it.hasNext(iterator1):
+        elemento=it.next(iterator1)
+        info= om.get(catalog['cities'], elemento)['value']
+        iterator2=it.newIterator(info)
+        while it.hasNext(iterator2):
+            elemento2= it.next(iterator2)
+            radioa=haversine(longitud_min,latitud_min,float(elemento2['longitude']), float(elemento2['latitude']) )
+            radiob=haversine(float(elemento2['longitude']), float(elemento2['latitude']),longitud_max,latitud_max, )
+            print(radio)
+            print(radioa)
+            print(radiob)
+            if radioa <= radio and radiob <= radio:
+                if lt.size(lista) == 0:
+                    lt.addFirst(lista, elemento2)
+                else:
+                    i= 0
+                    j= lt.size(lista)
+                    while i < j:
+                        i+=1
+                        if elemento2['datetime'] < lt.getElement(lista, i)['datetime']:
+                            viejo= lt.getElement(lista, i)
+                            lt.deleteElement(lista, i)
+                            lt.insertElement(lista, elemento2, i)
+                            lt.insertElement(lista,viejo,i+1)
+                            break
+                        elif elemento2['datetime'] == lt.getElement(lista, i)['datetime'] :
+                            viejo= lt.getElement(lista, i)
+                            lt.deleteElement(lista, i)
+                            lt.insertElement(lista, elemento2, i)
+                            lt.insertElement(lista,viejo,i+1)
+                            break
+                        elif i == j:
+                            lt.insertElement(lista, elemento2,i+1)
+                            break      
+    return lista
+
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    formula tomada de https://stackoverflow.com/questions/42686300/how-to-check-if-coordinate-inside-certain-area-python
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)*2 + cos(lat1) * cos(lat2) * sin(dlon/2)*2
+    c = 2 * asin(sqrt(a)) 
+    r = 3956 # Radius of earth in miles. Use 3956 for miles
+    return c * r
 
 
 
