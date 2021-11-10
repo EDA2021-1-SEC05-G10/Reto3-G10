@@ -119,6 +119,24 @@ def requerimiento3(hora_min, hora_max):
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
 
+def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
+    info= controller.requerimiento4(catalog, tiempo_año_1, tiempo_año_2)
+    print('El total de avistamientos: ' + str(lt.size(info)))
+    for i in range(1,4):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    for i in range(lt.size(info) -2, lt.size(info)+1):
+        fecha= lt.getElement(info, i)['datetime']
+        ciudad1= lt.getElement(info, i)['city']
+        pais= lt.getElement(info, i)['country']
+        segs= lt.getElement(info, i)['duration (seconds)']
+        forma= lt.getElement(info, i)['shape']
+        print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+
 
 """
  
@@ -147,6 +165,10 @@ while True:
         hora2= input('Ingrese hora maximo: ')
         requerimiento3(hora1,hora2)
 
+    elif int(inputs[0]) == 5:
+        hora1= input('Ingrese año 1: ')
+        hora2= input('Ingrese año 2: ')
+        requerimiento4(hora1,hora2)
     else:
         sys.exit(0)
 sys.exit(0)

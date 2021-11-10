@@ -152,23 +152,21 @@ def requerimiento3(catalog, hora_min, hora_max):
     minima= hora_min + ':00'
     maxima= hora_max + ':00'
     llaves=om.keys(catalog['horas'], minima, maxima)
-    lista= lt.newList()
+    lista= lt.newList('SINGLE_LINKED')
     iterator1= it.newIterator(llaves)
     while it.hasNext(iterator1):
-        print('entro a')
         elemento=it.next(iterator1)
         info= om.get(catalog['horas'], elemento)['value']
         iterator2=it.newIterator(info)
         while it.hasNext(iterator2):
-            print('entro b')
             elemento2= it.next(iterator2)
+            print(elemento2)
             if lt.size(lista) == 0:
                 lt.addFirst(lista, elemento2)
             else:
                 i= 1
                 j= lt.size(lista)
                 while i <= j:
-                    print('entro')
                     if elemento2['datetime'] < lt.getElement(lista, i)['datetime']:
                         viejo= lt.getElement(lista, i)
                         lt.deleteElement(lista, i)
@@ -184,6 +182,37 @@ def requerimiento3(catalog, hora_min, hora_max):
                     i+=1
     return lista
 
+def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
+    llaves= om.keys(catalog['years'], tiempo_año_1, tiempo_año_2)
+    lista= lt.newList()
+    iterator1=it.newIterator(llaves)
+    print(catalog['years'])
+    while it.hasNext(iterator1):
+        elemento= it.next(iterator1)
+        info= om.get(catalog['years'], elemento)['value']
+        iterator2= it.newIterator(info)
+        while it.hasNext(iterator2):
+            elemento2= it.next(iterator2)
+            if lt.size(lista) != 0:
+                i= 1
+                j= lt.size(lista)
+                while i <= j:
+                    if elemento2['years'] > lt.getElement(lista, i)['years']:
+                        viejo= lt.getElement(lista, i)
+                        lt.deleteElement(lista, i)
+                        lt.insertElement(lista, elemento2, i)
+                        lt.insertElement(lista,viejo,i+1)
+                    elif elemento2['years'] == lt.getElement(lista, i)['years'] and elemento2['city'] > lt.getElement(lista, i)['city']:
+                        viejo= lt.getElement(lista, i)
+                        lt.deleteElement(lista, i)
+                        lt.insertElement(lista, elemento2, i)
+                        lt.insertElement(lista,viejo,i+1)
+                    elif i == j:
+                        lt.insertElement(lista, elemento2,i+1)
+                    i+=1
+            else: 
+                lt.addLast(lista, elemento2)
+    return lista 
 
 
 

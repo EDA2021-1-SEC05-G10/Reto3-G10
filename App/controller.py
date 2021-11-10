@@ -64,3 +64,8 @@ def requerimiento2(catalog, tiempo_min, tiempo_max):
 def requerimiento3(catalog, hora_min, hora_max):
 
     return model.requerimiento3(catalog, hora_min, hora_max)
+
+
+def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
+
+    return model.requerimiento4(catalog, tiempo_año_1, tiempo_año_2)
