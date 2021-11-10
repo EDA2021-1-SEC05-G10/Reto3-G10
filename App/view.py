@@ -103,6 +103,7 @@ def requerimiento2(tiempo_min, tiempo_max):
 
 def requerimiento3(hora_min, hora_max):
     info=controller.requerimiento3(catalog, hora_min, hora_max)
+    print(lt.getElement(info, lt.size(info)))
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
         fecha= lt.getElement(info, i)['datetime']
@@ -166,9 +167,9 @@ while True:
         requerimiento3(hora1,hora2)
 
     elif int(inputs[0]) == 5:
-        hora1= input('Ingrese año 1: ')
-        hora2= input('Ingrese año 2: ')
-        requerimiento4(hora1,hora2)
+        Año1= input('Ingrese año 1: ')
+        Año2= input('Ingrese año 2: ')
+        requerimiento4(Año1, Año2)
     else:
         sys.exit(0)
 sys.exit(0)
