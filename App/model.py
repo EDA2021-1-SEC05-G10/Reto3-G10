@@ -248,9 +248,6 @@ def bono(catalog, longitud_max, longitud_min, latitud_min, latitud_max):
             elemento2= it.next(iterator2)
             radioa=haversine(longitud_min,latitud_min,float(elemento2['longitude']), float(elemento2['latitude']) )
             radiob=haversine(float(elemento2['longitude']), float(elemento2['latitude']),longitud_max,latitud_max, )
-            print(radio)
-            print(radioa)
-            print(radiob)
             if radioa <= radio and radiob <= radio:
                 if lt.size(lista) == 0:
                     lt.addFirst(lista, elemento2)
@@ -287,9 +284,12 @@ def haversine(lon1, lat1, lon2, lat2):
 
     # haversine formula 
     dlon = lon2 - lon1 
-    dlat = lat2 - lat1 
+    dlat = lat2 - lat1
     a = sin(dlat/2)*2 + cos(lat1) * cos(lat2) * sin(dlon/2)*2
-    c = 2 * asin(sqrt(a)) 
+    if a!=0 and a<1 and a>-1:
+        c = 2 * asin(sqrt(abs(a))) 
+    else:
+        c=0.1
     r = 3956 # Radius of earth in miles. Use 3956 for miles
     return c * r
 
