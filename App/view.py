@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import time
 from DISClib.ADT import list as lt
 assert cf
 
@@ -64,6 +65,7 @@ def print5(info):
 
 
 def requerimiento1(catalog, ciudad):
+    inicio= time.time()
     info= controller.requerimiento1(catalog, ciudad)
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
@@ -80,9 +82,12 @@ def requerimiento1(catalog, ciudad):
         segs= lt.getElement(info, i)['duration (seconds)']
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    fin=time.time()
+    print(fin-inicio)
     
 
 def requerimiento2(tiempo_min, tiempo_max):
+    inicio=time.time()
     info= controller.requerimiento2(catalog, tiempo_min, tiempo_max)
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
@@ -99,9 +104,12 @@ def requerimiento2(tiempo_min, tiempo_max):
         segs= lt.getElement(info, i)['duration (seconds)']
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    fin=time.time()
+    print(fin-inicio)
 
 
 def requerimiento3(hora_min, hora_max):
+    inicio=time.time()
     info=controller.requerimiento3(catalog, hora_min, hora_max)
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
@@ -118,8 +126,11 @@ def requerimiento3(hora_min, hora_max):
         segs= lt.getElement(info, i)['duration (seconds)']
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    fin=time.time()
+    print(fin-inicio)
 
 def requerimiento4(tiempo_año_1, tiempo_año_2):
+    inicio=time.time()
     info= controller.requerimiento4(catalog, tiempo_año_1, tiempo_año_2)
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,4):
@@ -136,9 +147,12 @@ def requerimiento4(tiempo_año_1, tiempo_año_2):
         segs= lt.getElement(info, i)['duration (seconds)']
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
+    fin=time.time()
+    print(fin-inicio)
 
 
 def bono(longitud_max, longitud_min, latitud_min, latitud_max):
+    inicio=time.time()
     info= controller.bono(catalog, float(longitud_max), float(longitud_min), float(latitud_min), float(latitud_max))
     print('El total de avistamientos: ' + str(lt.size(info)))
     for i in range(1,6):
@@ -155,7 +169,8 @@ def bono(longitud_max, longitud_min, latitud_min, latitud_max):
         segs= lt.getElement(info, i)['duration (seconds)']
         forma= lt.getElement(info, i)['shape']
         print(fecha + '  '+ ciudad1 + '  ' + pais+'  '+ segs + '  '+ forma)
-
+    fin=time.time()
+    print(fin-inicio)
 
 """
  
