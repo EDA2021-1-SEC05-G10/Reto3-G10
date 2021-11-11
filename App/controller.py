@@ -45,7 +45,7 @@ def loadData(catalog):
         model.add_duration_hours(info, catalog)
         model.add_years(info, catalog)
         model.add_location(info, catalog)
-
+        model.add_long(info, catalog)
         lt.addLast(lista, info)
     return lista
 
@@ -62,14 +62,17 @@ def requerimiento2(catalog, tiempo_min, tiempo_max):
 
     return model.requerimiento2(catalog, tiempo_min, tiempo_max)
 
-def requerimiento3(catalog, hora_min, hora_max):
+def requerimiento3(catalog, minimo, maximo):
 
-    return model.requerimiento3(catalog, hora_min, hora_max)
+    return model.requerimiento3(catalog, minimo, maximo)
 
 
 def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
 
     return model.requerimiento4(catalog, tiempo_año_1, tiempo_año_2)
+
+def requerimiento5(catalog,lonMin,lonMax,latMin,latMax):
+    return model.requerimiento5(catalog,lonMin,lonMax,latMin,latMax)
 
 def bono(catalog, longitud_max, longitud_min, latitud_min, latitud_max):
 

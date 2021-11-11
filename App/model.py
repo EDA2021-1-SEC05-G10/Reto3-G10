@@ -45,9 +45,10 @@ def newcatalog():
     catalog= {'cities': None, 'years':None, 'duration (seconds)': None, 'Horas': None,'location':None }
     catalog['years']= om.newMap(omaptype='BST',comparefunction=compareDates)
     catalog['cities']= om.newMap(omaptype='BST',comparefunction=compareDates)
-    catalog['duration (seconds)']= om.newMap(omaptype='BST',comparefunction=compareDates)
+    catalog['duration (seconds)']= om.newMap(omaptype='BST',comparefunction=compareSeg)
     catalog['horas']=om.newMap(omaptype='BST',comparefunction=compareDates)
     catalog['location']=om.newMap(omaptype='BST',comparefunction=compareDates)
+    catalog['longitude']=om.newMap(omaptype='BST',comparefunction=compareMed)
     return catalog
 # Funciones para agregar informacion al catalogo
 
@@ -102,7 +103,14 @@ def add_location(infolocation, catalog):
     else:
         lt.addLast(info['value'],infolocation)
         
-
+def add_long(infolong, catalog):
+    info= om.get(catalog['longitude'], round(float(infolong['longitude']),2))
+    if info is None:
+        long= lt.newList('SINGLE_LINKED')
+        lt.addLast(long, infolong)
+        om.put(catalog['longitude'],round(float(infolong['longitude']),2),long)
+    else:
+        lt.addLast(info['value'],infolong)
 # Funciones de consulta
 
 def requerimiento1(catalog, ciudad):
@@ -128,74 +136,32 @@ def requerimiento1(catalog, ciudad):
             lt.addLast(lista, elemento)
     return lista
 
-def requerimiento2(catalog, tiempo_min, tiempo_max):
-    llaves= om.keys(catalog['duration (seconds)'], tiempo_min, tiempo_max)
-    lista= lt.newList()
-    iterator1=it.newIterator(llaves)
-    print(catalog['duration (seconds)'])
-    while it.hasNext(iterator1):
-        elemento= it.next(iterator1)
-        info= om.get(catalog['duration (seconds)'], elemento)['value']
-        iterator2= it.newIterator(info)
-        while it.hasNext(iterator2):
-            elemento2= it.next(iterator2)
-            if lt.size(lista) != 0:
-                i= 1
-                j= lt.size(lista)
-                while i <= j:
-                    if elemento2['duration (seconds)'] > lt.getElement(lista, i)['duration (seconds)']:
-                        viejo= lt.getElement(lista, i)
-                        lt.deleteElement(lista, i)
-                        lt.insertElement(lista, elemento2, i)
-                        lt.insertElement(lista,viejo,i+1)
-                    elif elemento2['duration (seconds)'] == lt.getElement(lista, i)['duration (seconds)'] and elemento2['city'] > lt.getElement(lista, i)['city']:
-                        viejo= lt.getElement(lista, i)
-                        lt.deleteElement(lista, i)
-                        lt.insertElement(lista, elemento2, i)
-                        lt.insertElement(lista,viejo,i+1)
-                    elif i == j:
-                        lt.insertElement(lista, elemento2,i+1)
-                    i+=1
-            else: 
-                lt.addLast(lista, elemento2)
-    return lista 
 
-def requerimiento3(catalog, hora_min, hora_max):
-    minima= hora_min + ':00'
-    maxima= hora_max + ':00'
-    llaves=om.keys(catalog['horas'], minima, maxima)
-    lista= lt.newList('SINGLE_LINKED')
-    iterator1= it.newIterator(llaves)
-    while it.hasNext(iterator1):
-        elemento=it.next(iterator1)
-        info= om.get(catalog['horas'], elemento)['value']
-        iterator2=it.newIterator(info)
-        while it.hasNext(iterator2):
-            elemento2= it.next(iterator2)
-            if lt.size(lista) == 0:
-                lt.addFirst(lista, elemento2)
-            else:
-                i= 0
-                j= lt.size(lista)
-                while i < j:
-                    i+=1
-                    if elemento2['datetime'] < lt.getElement(lista, i)['datetime']:
-                        viejo= lt.getElement(lista, i)
-                        lt.deleteElement(lista, i)
-                        lt.insertElement(lista, elemento2, i)
-                        lt.insertElement(lista,viejo,i+1)
-                        break
-                        
-                    elif elemento2['datetime'] == lt.getElement(lista, i)['datetime'] :
-                        viejo= lt.getElement(lista, i)
-                        lt.deleteElement(lista, i)
-                        lt.insertElement(lista, elemento2, i)
-                        lt.insertElement(lista,viejo,i+1)
-                        break
-                    elif i == j:
-                        lt.insertElement(lista, elemento2,i+1)
-                        break
+def requerimiento2(catalog, tiempo_min, tiempo_max):
+    llaves=om.keySet(catalog['duration (seconds)'])
+    lista = lt.newList()
+    for cada in lt.iterator(llaves):
+        if "," not in list(cada):
+            if float(cada)>=float(tiempo_min) and float(cada)<= float(tiempo_max):
+                lt.addLast(lista,om.get(catalog['duration (seconds)'],cada)["value"])
     return lista
+
+def requerimiento3(catalog,minimo,maximo):
+    x= catalog["horas"]
+    minimo = str(minimo + ":00")
+    maximo = str(maximo + ":00")
+    #-----Mayor hora y veces que se repite--------
+    maxHor = om.maxKey(catalog["horas"])
+    cant = lt.size(me.getValue(om.get(x,maxHor)))
+    #---------------------------------------------
+    x = om.keys(x,minimo,maximo)
+    
+    mpFinal = om.newMap(omaptype='BST',comparefunction=compareDates)
+    for cada in lt.iterator(x):
+        datos = me.getValue(om.get(catalog["horas"],cada))
+        datos = sortDate(datos)
+        om.put(mpFinal,cada,datos)
+    return maxHor,cant,mpFinal
 
 def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
     año1= tiempo_año_1 
@@ -234,6 +200,27 @@ def requerimiento4(catalog, tiempo_año_1, tiempo_año_2):
                     
     return lista
 
+def requerimiento5(catalog,lonMin,lonMax,latMin,latMax):
+    lonMin,lonMax,latMin,latMax = float(lonMin),float(lonMax),float(latMin),float(latMax)
+    latitude=om.newMap(omaptype='BST',comparefunction=compareMed)
+    llaves = om.keys(catalog["longitude"],lonMax,lonMin)
+    datosFinales = lt.newList()
+    #-----Para cada long en rango añadir sus datos de lat a otro BST---
+    for llave in lt.iterator(llaves):
+        for datos in lt.iterator(om.get(catalog["longitude"],llave)["value"]):
+            info = om.get(latitude,round(float(datos["latitude"]),2))
+            if info == None:
+                dat = lt.newList()
+                lt.addLast(dat,datos)
+                om.put(latitude,round(float(datos["latitude"]),2),dat)
+            else:
+                lt.addLast(info["value"],datos)
+    #---------Añadir los datos en rango a una lista---------------
+    for cada in lt.iterator(om.valueSet(latitude)):
+        for cada2 in lt.iterator(cada):
+            if round(float(cada2["latitude"]),2) >= latMin and round(float(cada2["latitude"]),2)<=latMax:
+                lt.addLast(datosFinales,cada2)
+    return datosFinales
 
 def bono(catalog, longitud_max, longitud_min, latitud_min, latitud_max):
     radio= haversine(longitud_min,  latitud_min, longitud_max, latitud_max)
@@ -315,4 +302,23 @@ def compareDates(Fecha1,Fecha2):
         return 1
     else:
         return 0
+def compareSeg(dato1,dato2):
+    if dato1 < (dato2):
+        return -1
+    elif dato2 < (dato1):
+        return 1
+    else:
+        return 0
+def compareDate(autor1,autor2):
+    return (autor1['datetime'] < autor2['datetime'])
+def compareMed(med1,med2):
+    if float(med1) < (float(med2)):
+        return -1
+    elif float(med2) < (float(med1)):
+        return 1
+    else:
+        return 0
 
+def sortDate(catalog):
+    sorted_list = sa.sort(catalog, compareDate)
+    return sorted_list
